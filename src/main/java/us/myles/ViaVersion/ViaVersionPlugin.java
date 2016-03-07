@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import us.myles.ViaVersion.api.ViaVersion;
 import us.myles.ViaVersion.api.ViaVersionAPI;
 import us.myles.ViaVersion.api.boss.BossBar;
@@ -23,6 +25,7 @@ import us.myles.ViaVersion.boss.ViaBossBar;
 import us.myles.ViaVersion.commands.ViaVersionCommand;
 import us.myles.ViaVersion.handlers.ViaVersionInitializer;
 import us.myles.ViaVersion.listeners.CommandBlockListener;
+import us.myles.ViaVersion.listeners.PortalListener;
 import us.myles.ViaVersion.update.UpdateListener;
 import us.myles.ViaVersion.update.UpdateUtil;
 import us.myles.ViaVersion.util.ReflectionUtil;
@@ -90,6 +93,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaVersionAPI {
         Bukkit.getPluginManager().registerEvents(new ArmorListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CommandBlockListener(this), this);
         Bukkit.getPluginManager().registerEvents(new UpdateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new PortalListener(this), this);
 
         getCommand("viaversion").setExecutor(new ViaVersionCommand(this));
     }
