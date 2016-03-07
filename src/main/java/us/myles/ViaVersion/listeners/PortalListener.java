@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import us.myles.ViaVersion.ViaVersionPlugin;
+import us.myles.ViaVersion.api.ViaVersion;
 import us.myles.ViaVersion.util.ReflectionUtil;
 
 public class PortalListener implements org.bukkit.event.Listener {
@@ -35,8 +36,9 @@ public class PortalListener implements org.bukkit.event.Listener {
 
 			@Override
 			public void run() {
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if(p.getLocation().getBlock().getType() == Material.PORTAL && p.getGameMode() != GameMode.CREATIVE) {
+				for(UUID uuid : ViaVersion.getInstance().getPortedPlayers().keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if(p != null && p.getLocation().getBlock().getType() == Material.PORTAL && p.getGameMode() != GameMode.CREATIVE) {
 						int time = registerPortal(p.getUniqueId());
 						if(time == 15) {
 							Location l = p.getLocation();

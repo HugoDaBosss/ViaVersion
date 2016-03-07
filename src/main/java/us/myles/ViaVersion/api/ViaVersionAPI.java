@@ -1,11 +1,15 @@
 package us.myles.ViaVersion.api;
 
 import io.netty.buffer.ByteBuf;
+
 import org.bukkit.entity.Player;
+
+import us.myles.ViaVersion.ConnectionInfo;
 import us.myles.ViaVersion.api.boss.BossBar;
 import us.myles.ViaVersion.api.boss.BossColor;
 import us.myles.ViaVersion.api.boss.BossStyle;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface ViaVersionAPI {
@@ -84,4 +88,11 @@ public interface ViaVersionAPI {
      * @return true if it is
      */
     boolean isSyncedChunks();
+
+    /**
+     * Obtains a list of players using 1.9
+     * 
+     * @return map of players using 1.9
+     */
+	Map<UUID, ConnectionInfo> getPortedPlayers();
 }

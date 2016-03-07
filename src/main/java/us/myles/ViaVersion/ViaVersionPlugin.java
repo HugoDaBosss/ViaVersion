@@ -31,6 +31,7 @@ import us.myles.ViaVersion.update.UpdateUtil;
 import us.myles.ViaVersion.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -93,8 +94,8 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaVersionAPI {
         Bukkit.getPluginManager().registerEvents(new ArmorListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CommandBlockListener(this), this);
         Bukkit.getPluginManager().registerEvents(new UpdateListener(this), this);
-        
-        Bukkit.getPluginManager().registerEvents(new PortalListener(this), this);
+        if(Bukkit.getServer().getAllowNether())
+        	Bukkit.getPluginManager().registerEvents(new PortalListener(this), this);
 
         getCommand("viaversion").setExecutor(new ViaVersionCommand(this));
     }
@@ -143,6 +144,11 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaVersionAPI {
     @Override
     public boolean isPorted(UUID playerUUID) {
         return portedPlayers.containsKey(playerUUID);
+    }
+    
+    @Override
+    public Map<UUID, ConnectionInfo> getPortedPlayers() {
+    	return Collections.unmodifiableMap(portedPlayers);
     }
 
     @Override
