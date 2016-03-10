@@ -33,6 +33,8 @@ import static us.myles.ViaVersion.util.PacketUtil.*;
 public class OutgoingTransformer {
 
     private final ViaVersionPlugin plugin = (ViaVersionPlugin) ViaVersion.getInstance();
+    
+    private static Map<Integer, ByteBuf> cache = createLRUMap(200);
 
     private final ConnectionInfo info;
     private final Map<Integer, UUID> uuidMap = new HashMap<>();
@@ -69,6 +71,12 @@ public class OutgoingTransformer {
     }
 
     public void transform(int packetID, ByteBuf input, ByteBuf output) throws CancelException {
+    	int hashcode = input.hashCode();
+    	if(cache.containsKey(hashcode)) {
+    		System.out.println("Got from cache: " + hashcode);
+    		output = cache.get(hashcode).copy();
+    		return;
+    	}
         PacketType packet = PacketType.getOutgoingPacket(info.getState(), packetID);
         int original = packetID;
         if (packet == null) {
@@ -797,6 +805,7 @@ public class OutgoingTransformer {
             return;
         }
         output.writeBytes(input);
+        addToCache(hashcode, output);
     }
 
     private void sendTeamPacket(boolean b) {
@@ -877,7 +886,6 @@ public class OutgoingTransformer {
         }
     }
 
-
     private UUID getUUID(int id) {
         if (uuidMap.containsKey(id)) {
             return uuidMap.get(id);
@@ -902,4 +910,26 @@ public class OutgoingTransformer {
         }
         info.sendRawPacket(buf, true);
     }
+    
+    private static ByteBuf getFromCache(int hashcode, ByteBuf input) {
+    	if(cache.containsKey(hashcode))
+    		return cache.get(hashcode);
+    	return input;
+    }
+    
+    private static void addToCache(int hashcode, ByteBuf buf) {
+    	if(cache.containsKey(hashcode))
+    		return;
+    	cache.put(hashcode, buf);
+    }
+    
+    private static <K, V> Map<K, V> createLRUMap(final int maxEntries) {
+        return new LinkedHashMap<K, V>(maxEntries*10/7, 0.7f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                return size() > maxEntries;
+            }
+        };
+    }
+    
 }
